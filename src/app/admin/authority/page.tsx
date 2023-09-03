@@ -7,7 +7,6 @@ import {
   Grid,
   FormControl,
   InputLabel,
-  //   Select,
   MenuItem,
   Paper,
   TextField,
@@ -18,7 +17,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Button,
   Tabs,
   Tab,
 } from "@mui/material";
@@ -39,14 +37,17 @@ import { GiSpookyHouse } from "react-icons/gi";
 import { MdSubject } from "react-icons/md";
 
 // React Hooks
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
+
 
 // BiblioKeia Services
-import { solrAuthority } from "src/services/solrAuthority";
+import { SearchNames } from "@/services/searchNames";
 
 // BiblioKeia Components
-import { TabName } from "src/components/tables/tabNames"
-
+import { TabName } from "src/components/tables/tabNames";
+// import { FacetTypeNames } from "src/components/facets/typeNames";
+import FacetTypeNames from "src/components/facets/typeNames";
+import Affiliation from "src/components/facets/affiliations";
 
 const previousPaths = [
   {
@@ -96,11 +97,26 @@ const columns: GridColDef[] = [
 ];
 export default function Authority() {
   const [value, setValue] = useState(0);
-  const [search, setSearch] = useState("");
+
   const [type, setType] = useState("*");
   const [field, setField] = useState("general_search");
+  const [search, setSearch] = useState("");
   const [docs, setDocs] = useState([]);
-  const [row, setRows] = useState([])
+  const [rows, setRows] = useState([]);
+  const [facetType, setFacetType] = useState([]);
+
+  useEffect(() => {
+    // searchAuthority("*", "general_search", "*");
+    let params = {
+      q: `${field}:${search}*`,
+      "facet.field": "type",
+      fl: "*,[child]",
+      "q.op": "AND",
+      fq: `type:${type}`,
+      facet: "true",
+    };
+    SearchNames(params, setRows, setFacetType);
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -113,69 +129,22 @@ export default function Authority() {
     setField(event.target.value as string);
     // getData(search, event.target.value, currentPage);
   };
+
   const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value as string);
-    // getData(search, event.target.value, currentPage);
   };
 
-  // const async searchAuthority = () => {
-  //   let params = {
-  //     q: `${field}:${search}*`,
-  //     fl: "*,[child]",
-  //     "q.op": "AND",
-  //     fq: `type:${type}`,
-  //   };
-  //   solrAuthority
-  //     .get("select", {
-  //       params: params,
-  //     })
-  //     .then((response: any) => {
-  //       // setDocs(response.data.response.docs);
-  //       const x = response.data.response.docs.map((doc, index) => {id: doc.id})
-  //       return x
-  //       // console.log(x);
-  //       // setRows([ { id: 1, col1: "Hello", col2: "World" },
-  //       // { id: 2, col1: "DataGridPro", col2: "is Awesome" },
-  //       // { id: 3, col1: "MUI", col2: "is Amazing" }])
-  //     })
-  //     .catch(function (error) {
-  //       console.log("ERROOO!!", error);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   searchAuthority();
-  // }, []);
-
-  const rows: GridRowsProp = [
-    { id: 1, col1: "Hello", col2: "World" },
-    { id: 2, col1: "DataGridPro", col2: "is Awesome" },
-    { id: 3, col1: "MUI", col2: "is Amazing" },
-  ];
-
-
-  const onSubmit = (e) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     let params = {
       q: `${field}:${search}*`,
+      "facet.field": "type",
       fl: "*,[child]",
       "q.op": "AND",
       fq: `type:${type}`,
+      facet: "true",
     };
-    console.log(params);
-
-    solrAuthority
-      .get("select", {
-        params: params,
-      })
-      .then((response: any) => {
-        setDocs(response.data.response.docs);
-        // console.log(response.data.response.docs);
-      })
-      .catch(function (error) {
-        console.log("ERROOO!!", error);
-      });
+    SearchNames(params, setRows, setFacetType);
     // console.log(params);
   };
 
@@ -227,8 +196,8 @@ export default function Authority() {
                       onChange={handleChangeType}
                     >
                       <MenuItem value="*">Todos</MenuItem>
-                      <MenuItem value="PersonalName">Nome Pessoal</MenuItem>
-                      <MenuItem value="CorporateName">
+                      <MenuItem value="personalname">Nome Pessoal</MenuItem>
+                      <MenuItem value="corporatename">
                         Nome Cooporativo
                       </MenuItem>
                     </Select>
@@ -245,10 +214,10 @@ export default function Authority() {
                       onChange={handleChangeField}
                     >
                       <MenuItem value="general_search">Todos</MenuItem>
-                      <MenuItem value="authority">Nome Autorizado</MenuItem>
+                      <MenuItem value="label">Nome Autorizado</MenuItem>
                       <MenuItem value="fullerName">Nome completo</MenuItem>
                       <MenuItem value="variant">Variantes</MenuItem>
-                      <MenuItem value="affliation">Afiliação</MenuItem>
+                      <MenuItem value="organization">Afiliação</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -279,11 +248,21 @@ export default function Authority() {
             <Box sx={{ mt: "10px" }}>
               <Grid container spacing={2}>
                 <Grid item xs={4}>
-                  FILTROS
+                  {facetType?.length > 0 && (
+                    <FacetTypeNames
+                      facets={facetType}
+                      field={field}
+                      search={search}
+                      setRows={setRows}
+                      setFacetType={setFacetType}
+                      setType={setType}
+
+                    />
+                  )}
+                  <Affiliation />
                 </Grid>
                 <Grid item xs={8}>
-                  {/* <DataGrid rows={row} columns={columns} autoHeight={true} /> */}
-                  <TabName />
+                  <TabName rows={rows} />
                 </Grid>
               </Grid>
             </Box>
