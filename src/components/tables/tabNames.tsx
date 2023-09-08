@@ -1,6 +1,6 @@
 "use client";
 // BiblioKeia Services
-import { solrAuthority } from "@/services/solr";
+// import { solrAuthority } from "@/services/solr";
 // React Hooks
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 // MUI
@@ -89,36 +89,10 @@ function RenderType(props: GridRenderCellParams<any, String>) {
 
 export function TabName({ rows }) {
 
-  function searchAuthority(type: string, field: string, search: string) {
-    let params = {
-      q: `${field}:${search}*`,
-      fl: "*,[child]",
-      "q.op": "AND",
-      fq: `type:${type}`,
-    };
-    solrAuthority
-      .get("select", {
-        params: params,
-      })
-      .then((response: any) => {
-        const docs = response.data.response.docs;
-        const r = docs.map((doc, index) => {
-          console.log(doc.type[0]);
-          return { id: doc.id, label: doc.label[0], type: doc.type[0] };
-        });
-        setRows(r);
-
-        // setDocs(response.data.response.docs)
-        // console.log("X:", x)
-      })
-      .catch(function (error) {
-        console.log("ERROOO!!", error);
-      });
-  }
 
   const columns: GridColDef[] = [
     {
-      field: "label",
+      field: "authority",
       flex: 2,
       renderHeader: () => <strong>{"Nome"}</strong>,
       renderCell: RenderLabel,
@@ -132,4 +106,5 @@ export function TabName({ rows }) {
   ];
 
   return <DataGrid rows={rows} columns={columns} />;
+  // return <code>TABNAMES</code>
 }

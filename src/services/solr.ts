@@ -3,7 +3,7 @@ import axios from "axios";
 function search() {
     
     const api = axios.create({
-      baseURL: "http://localhost:8080/solr/",
+      baseURL: "http://localhost:8983/solr/",
     });  
   
    

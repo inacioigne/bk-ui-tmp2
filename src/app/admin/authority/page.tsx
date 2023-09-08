@@ -2,8 +2,6 @@
 import {
   Container,
   Box,
-  Divider,
-  Typography,
   Grid,
   FormControl,
   InputLabel,
@@ -12,11 +10,11 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
+  // List,
+  // ListItem,
+  // ListItemButton,
+  // ListItemIcon,
+  // ListItemText,
   Tabs,
   Tab,
 } from "@mui/material";
@@ -48,6 +46,7 @@ import { TabName } from "src/components/tables/tabNames";
 // import { FacetTypeNames } from "src/components/facets/typeNames";
 import FacetTypeNames from "src/components/facets/typeNames";
 import Affiliation from "src/components/facets/affiliations";
+import Occupations from "src/components/facets/occupations";
 
 const previousPaths = [
   {
@@ -101,22 +100,19 @@ export default function Authority() {
   const [type, setType] = useState("*");
   const [field, setField] = useState("search_general");
   const [search, setSearch] = useState("");
-  const [docs, setDocs] = useState([]);
   const [rows, setRows] = useState([]);
   const [facetType, setFacetType] = useState([]);
+  const [facetAffiliation, setFacetAffiliation] = useState([]);
+  const [facetOccupation, setOccupation] = useState([]);
 
   useEffect(() => {
-  
+
     let params = {
       q: `${field}:${search}*`,
-      "facet.field": "type",
-      fl: "*,[child]",
-      "q.op": "AND",
-      fq: `type:${type}`,
-      facet: "true",
+      fq: `type:${type}`
     };
-   
-    SearchNames(params, setRows, setFacetType);
+
+    SearchNames(params, setRows, setFacetType, setFacetAffiliation, setOccupation);
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -145,7 +141,8 @@ export default function Authority() {
       fq: `type:${type}`,
       facet: "true",
     };
-    SearchNames(params, setRows, setFacetType);
+    // SearchNames(params, setRows, setFacetType);
+    SearchNames(params, setRows, setFacetType, setFacetAffiliation);
     // console.log(params);
   };
 
@@ -214,7 +211,7 @@ export default function Authority() {
                       label="Filtro"
                       onChange={handleChangeField}
                     >
-                      <MenuItem value="general_search">Todos</MenuItem>
+                      <MenuItem value="search_general">Todos</MenuItem>
                       <MenuItem value="label">Nome Autorizado</MenuItem>
                       <MenuItem value="fullerName">Nome completo</MenuItem>
                       <MenuItem value="variant">Variantes</MenuItem>
@@ -249,6 +246,9 @@ export default function Authority() {
             <Box sx={{ mt: "10px" }}>
               <Grid container spacing={2}>
                 <Grid item xs={4}>
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: "10px"}}>
+
+                  
                   {facetType?.length > 0 && (
                     <FacetTypeNames
                       facets={facetType}
@@ -256,11 +256,30 @@ export default function Authority() {
                       search={search}
                       setRows={setRows}
                       setFacetType={setFacetType}
+                      setFacetAffiliation={setFacetAffiliation}
+                      setOccupation={setOccupation}
                       setType={setType}
 
                     />
                   )}
-                  <Affiliation />
+                  {facetAffiliation?.length > 0 && (
+                    <Affiliation facets={facetAffiliation}
+                      field={field}
+                      search={search} setRows={setRows}
+                      setFacetType={setFacetType}
+                      setFacetAffiliation={setFacetAffiliation}
+                      setOccupation={setOccupation} />
+                  )}
+                  {facetOccupation?.length > 0 && (
+                    <Occupations facets={facetOccupation}
+                      field={field}
+                      search={search} setRows={setRows}
+                      setFacetType={setFacetType}
+                      setFacetAffiliation={setFacetAffiliation} 
+                      setOccupation={setOccupation}
+                      />
+                  )}
+                  </Box>
                 </Grid>
                 <Grid item xs={8}>
                   <TabName rows={rows} />
