@@ -99,14 +99,14 @@ export default function Authority() {
   const [value, setValue] = useState(0);
 
   const [type, setType] = useState("*");
-  const [field, setField] = useState("general_search");
+  const [field, setField] = useState("search_general");
   const [search, setSearch] = useState("");
   const [docs, setDocs] = useState([]);
   const [rows, setRows] = useState([]);
   const [facetType, setFacetType] = useState([]);
 
   useEffect(() => {
-    // searchAuthority("*", "general_search", "*");
+  
     let params = {
       q: `${field}:${search}*`,
       "facet.field": "type",
@@ -115,6 +115,7 @@ export default function Authority() {
       fq: `type:${type}`,
       facet: "true",
     };
+   
     SearchNames(params, setRows, setFacetType);
   }, []);
 
