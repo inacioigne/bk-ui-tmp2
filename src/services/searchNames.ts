@@ -10,7 +10,7 @@ interface Params {
   // "facet.field": string;
   // fl: string;
   // "q.op": string;
-  fq: string;
+  // fq: string;
   // facet: string;
 }
 
@@ -34,24 +34,24 @@ export function SearchNames(
   setOccupation: Function
 ) {
 
-  const json = {
-      query: "*:*",
-      filter:"type:personalname",
-      filter:"affiliation:Academia Brasileira de Letras",
-    }
-  const jsonString = JSON.stringify(json);
-  const query = { json: jsonString}
+  // const json = {
+  //     query: "*:*",
+  //     filter:"type:personalname",
+  //     filter:"affiliation:Academia Brasileira de Letras",
+  //   }
+  // const jsonString = JSON.stringify(json);
+  // const query = { json: jsonString}
   
 
-  const param = new URLSearchParams();
-  param.append('q', '*:*');
-  param.append('fq', 'type:personalname');
-  param.append('fq', 'affiliation:Academia Brasileira de Letras');
-  param.append('facet.field', 'type');
-  param.append('facet.field', 'affiliation_str');
-  param.append('facet', 'true');
+  // const param = new URLSearchParams();
+  // param.append('q', '*:*');
+  // param.append('fq', 'type:personalname');
+  // param.append('fq', 'affiliation:Academia Brasileira de Letras');
+  // param.append('facet.field', 'type');
+  // param.append('facet.field', 'affiliation_str');
+  // param.append('facet', 'true');
   
-  console.log(param)
+  // console.log(param)
   // 
 
   // solr
@@ -64,15 +64,15 @@ export function SearchNames(
   //   &q.op=AND
   //   &q=${params.q}`
   //   )
-  solr.get("authority/query?", {params: param})
+  solr.get("authority/query?", {params: params})
     .then(function (response) {
-      console.log(response)
-      // const docs = response.data.response.docs;
-
-      // const r = docs.map((doc: any, index: number) => {
-      //   return { id: doc.id, authority: doc.authority[0], type: doc.type[0] };
-      // });
-      // setRows(r);
+      
+      const docs = response.data.response.docs;
+      const r = docs.map((doc: any, index: number) => {
+        return { id: doc.id, authority: doc.authority[0], type: doc.type[0] };
+      });
+      setRows(r);
+      console.log(r)
 
       // // Facets
       // const fType = TransformFacet(

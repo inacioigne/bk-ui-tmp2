@@ -107,10 +107,13 @@ export default function Authority() {
 
   useEffect(() => {
 
-    let params = {
-      q: `${field}:${search}*`,
-      fq: `type:${type}`
-    };
+    const params = new URLSearchParams();
+    params.append('q', 'search_general:*');
+    params.append('facet', 'true');
+    params.append('facet.field', 'type');
+    params.append('facet.field', 'affiliation_str');
+    params.append('facet.field', 'occupations_str');
+
 
     SearchNames(params, setRows, setFacetType, setFacetAffiliation, setOccupation);
   }, []);
