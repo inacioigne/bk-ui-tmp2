@@ -7,6 +7,8 @@ import { ProgressProvider } from "src/providers/progress";
 // import { BfProvider } from "src/providers/bibframe";
 import { AlertProvider } from "src/providers/alert";
 import { ModeProvider } from "src/providers/mode"
+// import { ParamsAuthorityProvider } from "src/providers/paramsAuthority"
+import { ParamsAuthorityProvider } from "src/providers/paramsAuthority"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,9 +27,9 @@ export default function RootLayout({
       <ProgressProvider>
         <ModeProvider>
           <AlertProvider>
-            {/* <BfProvider> */}
-              <body className={inter.className}>{children}</body>
-            {/* </BfProvider> */}
+            <ParamsAuthorityProvider>
+            <body className={inter.className}>{children}</body>
+            </ParamsAuthorityProvider>
           </AlertProvider>
         </ModeProvider>
       </ProgressProvider>

@@ -1,13 +1,8 @@
 import {
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Typography,
+  Box
 } from "@mui/material";
 import { TreeView } from '@mui/x-tree-view/TreeView';
+import StyledTreeItem from "@/components/facets/styledTreeItem"
 
 // Reacts Icons
 import { RiFilterLine } from 'react-icons/ri';
@@ -19,36 +14,36 @@ import { SearchNames } from "@/services/searchNames";
 // Types BiblioKeia
 import Facet from "@/utils/types"
 
-import StyledTreeItem from "@/components/facets/styledTreeItem"
-
+// Providers BiblioKeia
+import { useParmasAutority } from "src/providers/paramsAuthority"
 
 interface FacetProps {
   facets: Facet[];
-  field: string;
-  search: string;
   setRows: Function;
   setFacetType: Function;
   setFacetAffiliation: Function;
+  setOccupation: Function;
+  setRowCount: Function;
 }
 
 const Affiliation: React.FC<FacetProps> = ({
   facets,
-  field,
-  search,
   setRows,
+  setRowCount,
   setFacetType,
   setFacetAffiliation,
-  setOccupation
+  setOccupation,
 }) => {
 
-  const handleFacet = (facet: Facet) => {
-    let params = {
-      q: `${field}:${search}*`,
-      fq: `affiliation:${facet.name}`
-    };
-    SearchNames(
-      params, setRows, 
-      setFacetType, setFacetAffiliation, setOccupation);
+  const { paramsAuthority, updateParamsAuthority } = useParmasAutority()
+
+
+  const handleFacet = (facet: Facet, params: URLSearchParams) => {
+
+    if (!params.getAll('fq').includes(`affiliation:${facet.name}`)) {
+      params.append('fq', `affiliation:${facet.name}`);
+      SearchNames(paramsAuthority, setRows, setRowCount, setFacetType, setFacetAffiliation, setOccupation);  
+    }
 
   }
 
@@ -73,7 +68,9 @@ const Affiliation: React.FC<FacetProps> = ({
                 bgColor="#f3e8fd"
                 colorForDarkMode="#D9B8FB"
                 bgColorForDarkMode="#100719"
-                onClick={() => { handleFacet(facet) }}
+                onClick={() => {
+                  handleFacet(facet, paramsAuthority)
+                }}
               />
             ))
           }

@@ -1,6 +1,4 @@
 "use client";
-// BiblioKeia Services
-// import { solrAuthority } from "@/services/solr";
 // React Hooks
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 // MUI
@@ -11,10 +9,15 @@ import {
   GridRenderCellParams,
 } from "@mui/x-data-grid";
 import { Button, Avatar, Box } from "@mui/material";
-// import { useDemoData } from "@mui/x-data-grid-generator";
+import { GridRowParams, MuiEvent, GridCallbackDetails} from '@mui/x-data-grid';
+
+
 // React Icons
 import { TbUserSearch } from "react-icons/tb";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+
+// BiblioKeia Services
+import { SearchNames } from "@/services/searchNames";
 
 interface Label {
   name: string;
@@ -68,6 +71,8 @@ function RenderLabel(props: GridRenderCellParams<any, Object>) {
   );
 }
 
+
+
 function RenderType(props: GridRenderCellParams<any, String>) {
   const { hasFocus, value } = props;
   const obj = {
@@ -87,7 +92,21 @@ function RenderType(props: GridRenderCellParams<any, String>) {
   );
 }
 
-export function TabName({ rows }) {
+// Providers BiblioKeia
+import { useParmasAutority } from "src/providers/paramsAuthority"
+
+// TESTE GRID
+import { createFakeServer } from '@mui/x-data-grid-generator';
+
+const SERVER_OPTIONS = {
+  useCursorPagination: false,
+};
+
+
+
+export function TabName({ rows, rowCount, setRows, setRowCount, setFacetType, setFacetAffiliation, setOccupation }) {
+
+  const { paramsAuthority } = useParmasAutority()
 
 
   const columns: GridColDef[] = [
@@ -104,7 +123,28 @@ export function TabName({ rows }) {
       renderCell: RenderType,
     },
   ];
+ 
 
-  return <DataGrid rows={rows} columns={columns} />;
-  // return <code>TABNAMES</code>
+  const [paginationModel, setPaginationModel] = useState({
+      page: 0,
+      pageSize: 3,
+    });
+
+  return <DataGrid
+    rows={rows}
+    rowCount={rowCount}
+    onRowClick={(params: GridRowParams, event: MuiEvent, details: GridCallbackDetails) => {
+      console.log(params.id)}}
+    columns={columns}
+    paginationModel={paginationModel}
+    paginationMode="server"
+    onPaginationModelChange={(paginationModel) => {
+      let page = paginationModel.page == 0 ? 0 : paginationModel.page + 2
+      paramsAuthority.set('start', page)
+      SearchNames(paramsAuthority, setRows, setRowCount, setFacetType, setFacetAffiliation, setOccupation);
+      setPaginationModel(paginationModel)
+      console.log(page)}}
+    pageSizeOptions={[3]}
+  />;
+
 }

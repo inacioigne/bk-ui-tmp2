@@ -1,14 +1,8 @@
 import {
-  Box,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  // ListItemIcon,
-  ListItemText,
-  Typography,
+  Box
 } from "@mui/material";
 import { TreeView } from '@mui/x-tree-view/TreeView';
+import StyledTreeItem from "@/components/facets/styledTreeItem"
 
 // BiblioKeia Services
 import { SearchNames } from "@/services/searchNames";
@@ -16,45 +10,48 @@ import { SearchNames } from "@/services/searchNames";
 // Types BiblioKeia
 import Facet from "@/utils/types"
 
-import StyledTreeItem from "@/components/facets/styledTreeItem"
-
 // Reacts Icons
 import { RiFilterLine } from 'react-icons/ri';
 import { BsArrowsAngleContract, BsArrowsAngleExpand } from 'react-icons/bs';
 
+// Providers BiblioKeia
+import { useParmasAutority } from "src/providers/paramsAuthority"
+import { Console } from "console";
+
+interface Types {
+  [chave: string]: string;
+}
 
 interface FacetProps {
   facets: Facet[];
-  field: string;
-  search: string;
   setRows: Function;
   setFacetType: Function;
-  setType: Function;
+  setRowCount: Function;
   setFacetAffiliation: Function;
   setOccupation: Function;
 }
-const FacetTypeNames: React.FC<FacetProps> = ({ 
-  facets, field, search, setRows, setFacetType, setType, 
-  setFacetAffiliation, setOccupation }) => {
+const FacetTypeNames: React.FC<FacetProps> = ({
+  facets,
+  setRows,
+  setFacetType,
+  setFacetAffiliation,
+  setOccupation,
+  setRowCount
+}) => {
 
-  //   q={!parent which="type:* hasAffiliation:*"}organization:*
+  const { paramsAuthority, updateParamsAuthority } = useParmasAutority()
 
-  // q={!parent which="type:* hasAffiliation:*"}organization:Academia
-
-  const obj = {
+  const obj: Types = {
     personalname: "Nome Pessoal",
     corporatename: "Nome Coorporativo",
   };
 
-  const handleFacet = (facet: Facet) => {
-    let params = {
-      q: `${field}:${search}*`,
-      fq: `type:${facet.name}`
-    };
-    setType(facet.name)
-    SearchNames(
-      params, setRows, 
-      setFacetType, setFacetAffiliation, setOccupation);
+  const handleFacet = (facet: Facet, params: URLSearchParams) => {
+
+    if (!params.getAll('fq').includes(`type:${facet.name}`)) {
+      params.append('fq', `type:${facet.name}`)
+      SearchNames(paramsAuthority, setRows, setRowCount, setFacetType, setFacetAffiliation, setOccupation);  
+    }
   }
 
   return (
@@ -78,7 +75,9 @@ const FacetTypeNames: React.FC<FacetProps> = ({
                 bgColor="#f3e8fd"
                 colorForDarkMode="#D9B8FB"
                 bgColorForDarkMode="#100719"
-                onClick={() => { handleFacet(facet) }} />
+                onClick={() => {
+                  handleFacet(facet, paramsAuthority)
+                }} />
             ))
           }
         </Box>
