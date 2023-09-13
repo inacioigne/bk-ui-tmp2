@@ -72,7 +72,6 @@ function CustomTabPanel(props: TabPanelProps) {
       {value === index && (
         <Box sx={{ p: 3 }}>
           {children}
-          {/* <Typography>{children}</Typography> */}
         </Box>
       )}
     </div>
@@ -175,24 +174,7 @@ export default function Authority() {
           <Paper elevation={3} sx={{ p: "15px" }}>
             <form onSubmit={onSubmit}>
               <Grid container spacing={2}>
-                {/* <Grid item xs={2}>
-                  <FormControl fullWidth>
-                    <InputLabel id="type-label">Tipo</InputLabel>
-                    <Select
-                      labelId="type-label"
-                      id="type-select"
-                      value={type}
-                      label="Tipo"
-                      onChange={handleChangeType}
-                    >
-                      <MenuItem value="*">Todos</MenuItem>
-                      <MenuItem value="personalname">Nome Pessoal</MenuItem>
-                      <MenuItem value="corporatename">
-                        Nome Cooporativo
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid> */}
+               
                 <Grid item xs={2}>
                   <FormControl fullWidth>
                     <InputLabel id="field-label">Filtro</InputLabel>
@@ -239,7 +221,7 @@ export default function Authority() {
                     sx={{ lineHeight: 2.65, textTransform: 'none' }}
                     onClick={handleClean}
                   >
-                    Limpar Busca
+                    Limpar
                   </Button>
                   <Button variant="outlined" size="large" startIcon={<BsPersonPlus />} sx={{ lineHeight: 2.65, textTransform: 'none' }}
                   >
