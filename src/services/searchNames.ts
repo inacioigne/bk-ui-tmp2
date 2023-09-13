@@ -1,5 +1,5 @@
 // React Hooks
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 
 // BiblioKeia Services
 import { solr } from "@/services/solr";
@@ -30,8 +30,7 @@ export function SearchNames(
 
 
   solr.get("authority/query?", {params: params})
-    .then(function (response) {
-            
+    .then(function (response) { 
       const docs = response.data.response.docs;
       setRowCount(response.data.response.numFound)
       // console.log(response)
@@ -39,7 +38,6 @@ export function SearchNames(
         return { id: doc.id, authority: doc.authority[0], type: doc.type[0] };
       });
       setRows(r);
-      
       // Facets
       const fType = TransformFacet(
         response.data.facet_counts.facet_fields.type
@@ -49,7 +47,6 @@ export function SearchNames(
         response.data.facet_counts.facet_fields.affiliation_str
       );
       setFacetAffiliation(fAffiliation);
-      
       const fOccupation = TransformFacet(
         response.data.facet_counts.facet_fields.occupation_str
       );

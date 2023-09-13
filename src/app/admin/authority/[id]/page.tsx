@@ -24,12 +24,18 @@ import { FcHome, FcSearch } from "react-icons/fc";
 
 import Image from "next/image";
 
+// BiblioKeia Services
+import { solr } from "@/services/solr";
+
 async function getData(id: string) {
-  const url = `http://localhost:8983/solr/authority/select?fl=*%2C%5Bchild%5D&q=id%3A${id}`;
+  // const url = `http://localhost:8983/solr/authority/select?fl=*%2C%5Bchild%5D&q=id%3A${id}`;
+  // const url = 'http://localhost:8983/solr/authority/select?fl=*%2C%5Bchild%5D&q=id%3Abka-1'
+  const url = 'http://localhost:8000/import/loc/agents?uri=http%3A%2F%2Fid.loc.gov%2Fauthorities%2Fnames%2Fn80002329'
+
 
   const res = await fetch(url);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
+  console.log(res.json())
+
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -51,27 +57,22 @@ const previousPaths = [
     icon: <FcHome fontSize="small" />,
   },
 ];
+
 export default async function Page({ params }: { params: { id: string } }) {
   const data = await getData(params.id);
-  const [doc] = await data.response.docs;
-  // console.log("params", doc)
+  // const [doc] = await data.response.docs;
+  console.log("params", params.id)
 
   return (
     <Container maxWidth="xl">
       <Box my={"1rem"}>
         <BreadcrumbsBK previousPaths={previousPaths} currentPath={params.id} />
         <Typography variant="h4" gutterBottom>
-          {doc.authority}
+          authority
         </Typography>
         <Divider />
         <Box sx={{mt: "5px"}}>
-        <Image
-          src={doc.imagem[0]}
-          width={200}
-          height={300}
-          alt="Picture of the author"
-        />
-
+        
         </Box>
        
       </Box>

@@ -11,7 +11,6 @@ import {
 import { Button, Avatar, Box } from "@mui/material";
 import { GridRowParams, MuiEvent, GridCallbackDetails} from '@mui/x-data-grid';
 
-
 // React Icons
 import { TbUserSearch } from "react-icons/tb";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
@@ -71,8 +70,6 @@ function RenderLabel(props: GridRenderCellParams<any, Object>) {
   );
 }
 
-
-
 function RenderType(props: GridRenderCellParams<any, String>) {
   const { hasFocus, value } = props;
   const obj = {
@@ -101,8 +98,6 @@ import { createFakeServer } from '@mui/x-data-grid-generator';
 const SERVER_OPTIONS = {
   useCursorPagination: false,
 };
-
-
 
 export function TabName({ rows, rowCount, setRows, setRowCount, setFacetType, setFacetAffiliation, setOccupation }) {
 
